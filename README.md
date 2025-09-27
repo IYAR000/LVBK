@@ -1,2 +1,2 @@
 # LVBK
-Martial Arts AI Computer Vison Project (Silat Lincah, Vovinam Viet Vo Dao, Brazilain Jiu-Jitsu, Kyokushin Nakamura)
+AI Library for analyzing and martial arts techniques through Computer Vison (Silat Lincah, Vovinam Viet Vo Dao, Brazilain Jiu-Jitsu, Kyokushin Nakamura)
