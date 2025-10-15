@@ -1,0 +1,92 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run tests
+      run: |
+        pytest tests/ --cov=src/
+
+    - name: Set up Podman
+      uses: redhat-actions/setup-podman@v1
+      with:
+        podman-version: "latest"
+
+    - name: Build and tag container image
+      run: |
+        TAG=${GITHUB_REF#refs/tags/}
+        podman build -t lvbk:$TAG .
+        podman tag lvbk:$TAG lvbk:latest
+
+    - name: Generate changelog
+      id: changelog
+      run: |
+        # Generate changelog from git commits
+        git log --pretty=format:"- %s (%h)" $(git describe --tags --abbrev=0 HEAD^)..HEAD > CHANGELOG.md
+        echo "changelog<<EOF" >> $GITHUB_OUTPUT
+        cat CHANGELOG.md >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          ## Changes in this Release
+          
+          ${{ steps.changelog.outputs.changelog }}
+          
+          ## Installation
+          
+          ### Using pip
+          ```bash
+          pip install lvbk==${{ github.ref_name }}
+          ```
+          
+          ### Using container
+          ```bash
+          podman pull ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+          ```
+          
+          ## Documentation
+          
+          - [API Documentation](https://lvbk.readthedocs.io/)
+          - [User Guide](https://github.com/${{ github.repository }}/wiki)
+          - [Contributing Guide](https://github.com/${{ github.repository }}/blob/main/CONTRIBUTING.md)
+        draft: false
+        prerelease: false
+
+    - name: Upload container image
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./lvbk-image.tar.gz
+        asset_name: lvbk-container-${{ github.ref_name }}.tar.gz
+        asset_content_type: application/gzip

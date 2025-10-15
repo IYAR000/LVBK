@@ -1,0 +1,42 @@
+# Inference API Configuration
+inference:
+  # Model loading
+  models:
+    mmdetection:
+      config_path: "configs/mmdetection/person_detection.py"
+      checkpoint_path: "models/weights/mmdetection/latest.pth"
+      
+    mmpose:
+      silat_lincah:
+        config_path: "configs/mmpose/silat_lincah.py"
+        checkpoint_path: "models/weights/mmpose/silat_lincah/latest.pth"
+      vovinam:
+        config_path: "configs/mmpose/vovinam.py"
+        checkpoint_path: "models/weights/mmpose/vovinam/latest.pth"
+      bjj:
+        config_path: "configs/mmpose/bjj.py"
+        checkpoint_path: "models/weights/mmpose/bjj/latest.pth"
+      kyokushin:
+        config_path: "configs/mmpose/kyokushin.py"
+        checkpoint_path: "models/weights/mmpose/kyokushin/latest.pth"
+
+# Processing settings
+processing:
+  confidence_threshold: 0.7
+  max_batch_size: 4
+  timeout_seconds: 300
+  
+# IBM Watson integration
+watson:
+  api_key_env: "IBM_WATSON_API_KEY"
+  project_id_env: "IBM_WATSON_PROJECT_ID"
+  url_env: "IBM_WATSON_URL"
+  model_name: "granite-3.0-8b-instruct"
+  max_tokens: 1024
+  temperature: 0.1
+  
+# Response formatting
+response:
+  include_confidence: true
+  include_technique_details: true
+  include_timestamps: true

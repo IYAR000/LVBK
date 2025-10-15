@@ -1,0 +1,231 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lvbk"
+dynamic = ["version"]
+description = "LVBK Martial Arts Computer Vision AI System"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "LVBK Development Team", email = "lvbk@example.com"}
+]
+maintainers = [
+    {name = "LVBK Development Team", email = "lvbk@example.com"}
+]
+keywords = ["martial-arts", "computer-vision", "ai", "pose-estimation", "technique-analysis"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.1.0",
+    "torchvision>=0.16.0",
+    "mmcv>=2.0.0",
+    "mmpose>=1.3.0",
+    "mmdetection>=3.3.0",
+    "mmengine>=0.10.0",
+    "opencv-python>=4.8.0",
+    "Pillow>=10.0.0",
+    "scikit-image>=0.21.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "scipy>=1.11.0",
+    "matplotlib>=3.7.0",
+    "pycocotools>=2.0.0",
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.4.0",
+    "python-multipart>=0.0.6",
+    "ibm-watsonx-ai",
+    "ibm-cloud-sdk-core",
+    "ibm-watson",
+    "oss2>=2.18.0",
+    "cos-python-sdk-v5",
+    "sqlalchemy>=2.0.0",
+    "psycopg2-binary>=2.9.0",
+    "jupyter>=1.0.0",
+    "jupyterlab>=4.0.0",
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0.0",
+    "requests>=2.31.0",
+    "tqdm>=4.66.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.7.0",
+    "flake8>=6.1.0",
+    "mypy>=1.5.0",
+    "pre-commit>=3.4.0",
+    "bandit>=1.7.5",
+    "safety>=2.3.5",
+]
+test = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.21.0",
+    "httpx>=0.24.0",
+]
+docs = [
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=1.3.0",
+    "myst-parser>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/IYAR000/LVBK"
+Documentation = "https://lvbk.readthedocs.io/"
+Repository = "https://github.com/IYAR000/LVBK"
+"Bug Tracker" = "https://github.com/IYAR000/LVBK/issues"
+Changelog = "https://github.com/IYAR000/LVBK/blob/main/CHANGELOG.md"
+
+[project.scripts]
+lvbk-api = "lvbk.api.main:run_api"
+lvbk-train = "lvbk.scripts.training:main"
+lvbk-analyze = "lvbk.scripts.analysis:main"
+
+[tool.setuptools]
+packages = ["lvbk"]
+
+[tool.setuptools.package-dir]
+lvbk = "src/lvbk"
+
+[tool.setuptools_scm]
+write_to = "src/lvbk/_version.py"
+
+[tool.black]
+line-length = 88
+target-version = ['py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["lvbk"]
+known_third_party = ["fastapi", "uvicorn", "pydantic", "numpy", "torch", "cv2"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "mmcv.*",
+    "mmpose.*",
+    "mmdetection.*",
+    "mmengine.*",
+    "cv2.*",
+    "PIL.*",
+    "skimage.*",
+    "ibm_watson.*",
+    "ibm_cloud_sdk_core.*",
+    "oss2.*",
+    "cos_python_sdk_v5.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=src/lvbk",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+    "--cov-fail-under=70",
+]
+testpaths = ["tests"]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow tests",
+    "gpu: Tests requiring GPU",
+]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["src/lvbk"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/migrations/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv",
+    ".eggs",
+    "*.egg",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".tox",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "test_*"]
+skips = ["B101", "B601"]

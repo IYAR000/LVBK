@@ -1,0 +1,126 @@
+name: Deploy to Cloud
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - production
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deploy-staging:
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    runs-on: ubuntu-latest
+    environment: staging
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Podman
+      uses: redhat-actions/setup-podman@v1
+      with:
+        podman-version: "latest"
+
+    - name: Log in to Container Registry
+      uses: redhat-actions/podman-login@v1
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=sha,prefix={{branch}}-
+          type=raw,value=staging,enable={{is_default_branch}}
+
+    - name: Build and push container image
+      run: |
+        podman build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tags }} .
+        podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tags }}
+
+    - name: Deploy to staging
+      run: |
+        echo "Deploying to staging environment..."
+        # Add deployment commands for staging environment
+        # This would typically involve updating Kubernetes manifests or
+        # calling cloud provider APIs
+
+  deploy-production:
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    runs-on: ubuntu-latest
+    environment: production
+    needs: deploy-staging
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Podman
+      uses: redhat-actions/setup-podman@v1
+      with:
+        podman-version: "latest"
+
+    - name: Log in to Container Registry
+      uses: redhat-actions/podman-login@v1
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+          type=raw,value=production,enable={{is_default_branch}}
+
+    - name: Build and push container image
+      run: |
+        podman build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tags }} .
+        podman push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tags }}
+
+    - name: Deploy to production
+      run: |
+        echo "Deploying to production environment..."
+        # Add deployment commands for production environment
+        # This would typically involve updating Kubernetes manifests or
+        # calling cloud provider APIs
+
+    - name: Run smoke tests
+      run: |
+        echo "Running smoke tests..."
+        # Add smoke tests to verify deployment
+        # curl -f https://api.lvbk.com/health || exit 1
+
+    - name: Notify deployment success
+      if: success()
+      run: |
+        echo "Production deployment successful!"
+        # Add notification logic (Slack, email, etc.)
+
+    - name: Notify deployment failure
+      if: failure()
+      run: |
+        echo "Production deployment failed!"
+        # Add notification logic for failures

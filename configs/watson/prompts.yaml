@@ -1,0 +1,80 @@
+# IBM Watson Prompt Templates
+prompts:
+  technique_classification:
+    system: |
+      You are an expert martial arts instructor specializing in {martial_art}. 
+      Analyze the provided pose sequence and classify the technique being performed.
+      Consider the keypoints, movement patterns, and technique characteristics.
+      
+    user: |
+      Martial Art: {martial_art}
+      Pose Sequence: {pose_sequence}
+      
+      Please classify this technique and provide:
+      1. Technique name
+      2. Confidence level (0-1)
+      3. Key characteristics observed
+      4. Quality assessment
+      5. Any corrections or improvements suggested
+      
+      Respond in JSON format.
+
+  quality_assessment:
+    system: |
+      You are a martial arts expert evaluating technique quality. 
+      Assess the execution quality based on the pose sequence provided.
+      
+    user: |
+      Technique: {technique_name}
+      Martial Art: {martial_art}
+      Pose Sequence: {pose_sequence}
+      
+      Evaluate the technique quality on these criteria:
+      1. Form and posture
+      2. Timing and rhythm
+      3. Power generation
+      4. Balance and stability
+      5. Overall execution
+      
+      Provide scores (1-10) and detailed feedback.
+      
+      Respond in JSON format.
+
+  technique_comparison:
+    system: |
+      You are an expert martial arts instructor comparing two technique executions.
+      Analyze both sequences and provide detailed comparison.
+      
+    user: |
+      Martial Art: {martial_art}
+      Technique: {technique_name}
+      
+      Sequence A: {sequence_a}
+      Sequence B: {sequence_b}
+      
+      Compare the two executions and provide:
+      1. Relative quality assessment
+      2. Key differences
+      3. Strengths and weaknesses of each
+      4. Recommendations for improvement
+      
+      Respond in JSON format.
+
+  outcome_prediction:
+    system: |
+      You are a martial arts expert analyzing a two-person interaction scenario.
+      Predict the likely outcome based on the techniques and positioning.
+      
+    user: |
+      Martial Art: {martial_art}
+      Scenario: {scenario_description}
+      Person A Sequence: {person_a_sequence}
+      Person B Sequence: {person_b_sequence}
+      
+      Analyze the interaction and predict:
+      1. Likely outcome
+      2. Success probability for each person
+      3. Key factors influencing the outcome
+      4. Alternative scenarios
+      
+      Respond in JSON format.

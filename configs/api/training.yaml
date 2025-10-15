@@ -1,0 +1,41 @@
+# Training API Configuration
+training:
+  batch_size: 8
+  learning_rate: 0.001
+  epochs: 100
+  validation_split: 0.2
+  early_stopping_patience: 10
+  
+  # Model specific settings
+  models:
+    mmdetection:
+      config_path: "configs/mmdetection/person_detection.py"
+      checkpoint_path: "models/weights/mmdetection/latest.pth"
+      
+    mmpose:
+      silat_lincah:
+        config_path: "configs/mmpose/silat_lincah.py"
+        checkpoint_path: "models/weights/mmpose/silat_lincah/latest.pth"
+      vovinam:
+        config_path: "configs/mmpose/vovinam.py"
+        checkpoint_path: "models/weights/mmpose/vovinam/latest.pth"
+      bjj:
+        config_path: "configs/mmpose/bjj.py"
+        checkpoint_path: "models/weights/mmpose/bjj/latest.pth"
+      kyokushin:
+        config_path: "configs/mmpose/kyokushin.py"
+        checkpoint_path: "models/weights/mmpose/kyokushin/latest.pth"
+
+# Data processing
+data:
+  input_dir: "data/raw"
+  processed_dir: "data/processed"
+  annotations_dir: "data/annotations"
+  max_video_size: 1073741824  # 1GB in bytes
+  supported_formats: ["mp4", "mov", "avi"]
+  
+# GPU settings
+gpu:
+  enabled: true
+  device_ids: [0]
+  mixed_precision: true
