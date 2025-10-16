@@ -151,3 +151,4 @@ def validate_url(url: str) -> bool:
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     
     return bool(url_pattern.match(url))
+

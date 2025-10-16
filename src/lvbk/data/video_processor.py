@@ -374,3 +374,4 @@ class VideoProcessor:
         except Exception as e:
             logger.error(f"Error creating thumbnail: {e}")
             raise
+

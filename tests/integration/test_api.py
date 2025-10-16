@@ -172,3 +172,4 @@ class TestAPI:
         # Test ReDoc
         response = self.client.get("/redoc")
         assert response.status_code == 200
+

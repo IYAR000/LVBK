@@ -242,3 +242,4 @@ class PoseDetector:
         except Exception as e:
             logger.error(f"Error visualizing poses: {e}")
             return frame
+

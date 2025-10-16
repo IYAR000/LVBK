@@ -15,3 +15,4 @@ __all__ = [
     "validate_martial_art",
     "validate_confidence_threshold"
 ]
+

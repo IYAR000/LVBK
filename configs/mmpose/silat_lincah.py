@@ -233,3 +233,4 @@ work_dir = './work_dirs/silat_lincah_pose'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
+

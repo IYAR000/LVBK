@@ -177,3 +177,4 @@ class TestVideoProcessor:
             
             self.processor._cleanup_temp_file("/tmp/nonexistent.mp4")
             mock_remove.assert_not_called()
+

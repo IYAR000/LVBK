@@ -9,3 +9,4 @@ from .pose_detector import PoseDetector
 from .watson_client import WatsonClient
 
 __all__ = ["TechniqueAnalyzer", "PoseDetector", "WatsonClient"]
+

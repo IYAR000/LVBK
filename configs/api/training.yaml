@@ -39,3 +39,4 @@ gpu:
   enabled: true
   device_ids: [0]
   mixed_precision: true
+

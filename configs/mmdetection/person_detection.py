@@ -136,3 +136,4 @@ work_dir = './work_dirs/person_detection'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
+
