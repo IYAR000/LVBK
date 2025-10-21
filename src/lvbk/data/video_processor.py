@@ -375,3 +375,7 @@ class VideoProcessor:
             logger.error(f"Error creating thumbnail: {e}")
             raise
 
+
+
+
+

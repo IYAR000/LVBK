@@ -243,3 +243,7 @@ class PoseDetector:
             logger.error(f"Error visualizing poses: {e}")
             return frame
 
+
+
+
+
